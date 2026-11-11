@@ -1,0 +1,18 @@
+{
+  "name": "KTP Armed Veng South Branch",
+  "short_name": "KTP AVS",
+  "description": "Kristian Thalai Pawl Armed Veng South Branch Member Directory",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#881337",
+  "theme_color": "#881337",
+  "icons": [
+    {
+      "src": "data/preview.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
+

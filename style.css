@@ -1,0 +1,151 @@
+/* KTP Armed Veng South Branch - Pure Light Theme */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap');
+
+body {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+/* Base utility fallbacks */
+.hidden {
+  display: none !important;
+}
+
+h1, h2, h3, h4, .brand-font {
+  font-family: 'Outfit', sans-serif;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Group Color Schemes for Sadrak, Mesak, Abednego */
+.badge-sadrak {
+  background-color: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+.badge-mesak {
+  background-color: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+.badge-abednego {
+  background-color: #eff6ff;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
+}
+
+/* Group Cards */
+.group-card-sadrak {
+  border-color: #fca5a5;
+  background: linear-gradient(180deg, #ffffff 0%, #fffbfb 100%);
+}
+.group-card-sadrak:hover {
+  border-color: #ef4444;
+  box-shadow: 0 8px 20px -4px rgba(239, 68, 68, 0.12);
+}
+
+.group-card-mesak {
+  border-color: #86efac;
+  background: linear-gradient(180deg, #ffffff 0%, #f7fdfa 100%);
+}
+.group-card-mesak:hover {
+  border-color: #10b981;
+  box-shadow: 0 8px 20px -4px rgba(16, 185, 129, 0.12);
+}
+
+.group-card-abednego {
+  border-color: #93c5fd;
+  background: linear-gradient(180deg, #ffffff 0%, #f8faff 100%);
+}
+.group-card-abednego:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 8px 20px -4px rgba(59, 130, 246, 0.12);
+}
+
+/* Modal Backdrop */
+.modal-backdrop {
+  backdrop-filter: blur(4px);
+  background-color: rgba(15, 23, 42, 0.4);
+}
+
+/* Print Optimization */
+@media print {
+  body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    font-size: 11pt !important;
+  }
+
+  .no-print,
+  #controlsSection,
+  #statsGrid,
+  #actionButtons,
+  #toastContainer,
+  header .action-btns,
+  .action-col {
+    display: none !important;
+  }
+
+  .print-header {
+    display: block !important;
+    text-align: center;
+    border-bottom: 2px solid #000;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+  }
+
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    font-size: 10.5pt !important;
+  }
+
+  th, td {
+    border: 1px solid #94a3b8 !important;
+    padding: 8px 10px !important;
+    color: #000000 !important;
+  }
+
+  th {
+    background-color: #f1f5f9 !important;
+    font-weight: 700 !important;
+  }
+
+  .badge-sadrak, .badge-mesak, .badge-abednego {
+    border: none !important;
+    background: transparent !important;
+    font-weight: bold !important;
+    color: #000000 !important;
+  }
+
+  .print-signatures {
+    display: flex !important;
+    justify-content: space-between;
+    margin-top: 60px;
+    padding: 0 40px;
+  }
+
+  .signature-line {
+    border-top: 1px solid #000;
+    width: 180px;
+    text-align: center;
+    padding-top: 6px;
+    font-size: 9pt;
+  }
+}

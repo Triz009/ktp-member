@@ -1,0 +1,39 @@
+{
+  "scores": {
+    "Luka Group": 480,
+    "Matheua Group": 520,
+    "Marka Group": 450,
+    "Johana Group": 510
+  },
+  "history": [
+    {
+      "id": "pt-1",
+      "date": "2026-03-02",
+      "group": "Matheua Group",
+      "points": 100,
+      "event": "KTP Week Sports - Badminton Doubles Winner"
+    },
+    {
+      "id": "pt-2",
+      "date": "2026-03-02",
+      "group": "Johana Group",
+      "points": 100,
+      "event": "Bible Recitation (Ephesi Bung 2) Pakhatna"
+    },
+    {
+      "id": "pt-3",
+      "date": "2026-03-09",
+      "group": "Luka Group",
+      "points": 80,
+      "event": "Biak In Hnatlang thawktu tam ber"
+    },
+    {
+      "id": "pt-4",
+      "date": "2026-03-16",
+      "group": "Marka Group",
+      "points": 90,
+      "event": "Zaipawl Practice kal tha lawmman"
+    }
+  ]
+}
+

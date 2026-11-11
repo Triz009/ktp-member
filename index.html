@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KTP Armed Veng South Branch - Member Directory</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Custom Light Styles -->
+  <link rel="stylesheet" href="style.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ktp: {
+              50: '#fff1f2',
+              100: '#ffe4e6',
+              200: '#fecdd3',
+              500: '#f43f5e',
+              700: '#be123c',
+              800: '#9f1239',
+              900: '#881337',
+              950: '#4c0519',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="min-h-screen bg-slate-50 flex flex-col text-slate-800 antialiased selection:bg-rose-100 selection:text-rose-900">
+
+  <!-- PRINT ONLY HEADER (Visible only on printout) -->
+  <div class="print-header hidden">
+    <div class="flex items-center justify-center space-x-3 mb-2">
+      <div class="w-12 h-12 rounded-full border-2 border-slate-900 flex items-center justify-center font-bold text-slate-900 text-base">
+        KṬP
+      </div>
+      <div>
+        <h1 class="text-xl font-bold uppercase tracking-wider text-slate-900">Kristian Ṭhalai Pawl</h1>
+        <h2 class="text-sm font-semibold text-slate-700">Armed Veng South Branch • Armed Veng Bial</h2>
+        <p class="text-xs italic text-slate-600">"Rawngbawl tura chhandam" (Ephesi 2:10)</p>
+      </div>
+    </div>
+    <div class="text-xs font-semibold uppercase tracking-wider border-t border-b border-slate-400 py-1.5 mt-2 flex justify-between px-4">
+      <span id="printSubtitle">Branch Member Directory</span>
+      <span id="printDate">Date: </span>
+    </div>
+  </div>
+
+  <!-- TOP LIGHT BRANDING NAVBAR -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between py-3">
+        
+        <!-- Logo & Title (Light Theme) -->
+        <div class="flex items-center space-x-3 sm:space-x-4">
+          <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-rose-700 to-rose-900 p-0.5 shadow-sm flex items-center justify-center flex-shrink-0">
+            <div class="w-full h-full bg-white rounded-[10px] flex flex-col items-center justify-center">
+              <span class="text-xs font-black tracking-widest text-rose-900 leading-none">KṬP</span>
+              <span class="text-[8px] font-bold text-slate-500">AVS</span>
+            </div>
+          </div>
+          <div>
+            <div class="flex items-center space-x-2">
+              <h1 class="text-base sm:text-lg font-bold tracking-tight text-slate-900">
+                KRISTIAN ṬHALAI PAWL
+              </h1>
+              <span class="inline-block px-2 py-0.5 rounded-full text-[10px] font-semibold bg-rose-50 text-rose-800 border border-rose-200">
+                Armed Veng South Branch
+              </span>
+            </div>
+            <p class="text-xs text-slate-500 flex items-center gap-1.5 flex-wrap">
+              <span class="font-medium text-slate-600">Armed Veng Bial</span>
+              <span class="inline-block w-1 h-1 rounded-full bg-slate-300"></span>
+              <span class="italic text-slate-500">"Rawngbawl tura chhandam" (Ephesi 2:10)</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Right Quick Actions -->
+        <div class="flex items-center space-x-2 sm:space-x-2.5 action-btns">
+          
+          <!-- Export CSV -->
+          <button onclick="exportToCSV()" title="Export to CSV" class="hidden sm:flex items-center space-x-1.5 px-3 py-2 text-xs font-semibold rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition">
+            <i data-lucide="download" class="w-3.5 h-3.5 text-slate-600"></i>
+            <span>Export</span>
+          </button>
+
+          <!-- Print Directory -->
+          <button onclick="window.print()" title="Print Directory" class="flex items-center space-x-1.5 px-3 py-2 text-xs font-semibold rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition">
+            <i data-lucide="printer" class="w-3.5 h-3.5 text-slate-600"></i>
+            <span class="hidden sm:inline">Print</span>
+          </button>
+
+          <!-- Secretary Auth Badge & Button -->
+          <div id="secretaryAuthContainer" class="flex items-center space-x-1.5">
+            <!-- Logged out state: Login button -->
+            <button onclick="openSecretaryLoginModal()" id="btnSecretaryLogin" class="flex items-center space-x-1.5 px-3 py-2 text-xs font-semibold rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition">
+              <i data-lucide="lock" class="w-3.5 h-3.5 text-slate-500"></i>
+              <span>Secretary Login</span>
+            </button>
+
+            <!-- Logged in state (Hidden by default) -->
+            <div id="secretaryLoggedInBox" class="hidden flex items-center space-x-1.5">
+              <span class="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-600"></i>
+                <span>Secretary</span>
+              </span>
+
+              <!-- + Add Member Button (Only active/visible for Secretary) -->
+              <button onclick="openAddMemberModal()" class="flex items-center space-x-1.5 px-3.5 py-2 text-xs sm:text-sm font-bold rounded-xl bg-rose-900 hover:bg-rose-800 text-white shadow-xs transition">
+                <i data-lucide="user-plus" class="w-4 h-4"></i>
+                <span>+ Member Thar</span>
+              </button>
+
+              <!-- Logout Button -->
+              <button onclick="logoutSecretary()" title="Secretary Logout" class="px-2.5 py-2 text-xs font-semibold rounded-xl bg-slate-100 hover:bg-rose-50 hover:text-rose-700 text-slate-600 border border-slate-200 transition">
+                <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-grow">
+
+    <!-- SECRETARY ACTIVE BANNER (Hidden when logged out) -->
+    <div id="secretaryActiveBanner" class="hidden mb-5 bg-emerald-50 border border-emerald-200 rounded-2xl p-3 sm:p-3.5 flex items-center justify-between shadow-xs no-print">
+      <div class="flex items-center space-x-2.5 text-xs text-emerald-900">
+        <div class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center flex-shrink-0">
+          <i data-lucide="unlock" class="w-4 h-4"></i>
+        </div>
+        <div>
+          <span class="font-bold text-emerald-950">Branch Secretary Mode Active:</span>
+          <span class="text-emerald-800 ml-1">Member thar dahna, siamthatna leh paihna phal a ni ta e.</span>
+        </div>
+      </div>
+      <div class="flex items-center space-x-3 text-xs">
+        <button onclick="changeSecretaryPassword()" class="font-semibold text-emerald-800 hover:text-emerald-950 flex items-center gap-1">
+          <i data-lucide="key" class="w-3.5 h-3.5"></i>
+          <span>Change Password</span>
+        </button>
+        <span class="text-emerald-300">|</span>
+        <button onclick="logoutSecretary()" class="font-bold text-rose-700 hover:text-rose-900">
+          Log out
+        </button>
+      </div>
+    </div>
+
+    <!-- DASHBOARD STATS SECTION (SADRAK, MESAK, ABEDNEGO) -->
+    <section id="statsGrid" class="mb-6 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 no-print">
+      
+      <!-- Total Members -->
+      <div onclick="selectGroupFilter('All')" class="cursor-pointer bg-white rounded-2xl p-4 shadow-xs border border-slate-200 hover:border-slate-300 transition group">
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Members</span>
+            <h3 id="statTotal" class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">--</h3>
+            <span class="text-[11px] text-slate-500 font-medium mt-0.5 block">
+              <span id="statMale" class="text-slate-800 font-semibold">0</span> Mipa • 
+              <span id="statFemale" class="text-slate-800 font-semibold">0</span> Hmeichhia
+            </span>
+          </div>
+          <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center">
+            <i data-lucide="users" class="w-5 h-5"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sadrak Group -->
+      <div onclick="selectGroupFilter('Sadrak')" class="cursor-pointer bg-white rounded-2xl p-4 shadow-xs border border-slate-200 group-card-sadrak transition group">
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-rose-800 flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-rose-600"></span> Sadrak
+            </span>
+            <h3 id="statSadrak" class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">--</h3>
+            <span id="statSadrakPct" class="text-[11px] text-slate-500 font-medium">--% of total</span>
+          </div>
+          <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-700 flex items-center justify-center">
+            <i data-lucide="flame" class="w-5 h-5"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mesak Group -->
+      <div onclick="selectGroupFilter('Mesak')" class="cursor-pointer bg-white rounded-2xl p-4 shadow-xs border border-slate-200 group-card-mesak transition group">
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-emerald-800 flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-600"></span> Mesak
+            </span>
+            <h3 id="statMesak" class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">--</h3>
+            <span id="statMesakPct" class="text-[11px] text-slate-500 font-medium">--% of total</span>
+          </div>
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center">
+            <i data-lucide="shield" class="w-5 h-5"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Abednego Group -->
+      <div onclick="selectGroupFilter('Abednego')" class="cursor-pointer bg-white rounded-2xl p-4 shadow-xs border border-slate-200 group-card-abednego transition group">
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-blue-800 flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-blue-600"></span> Abednego
+            </span>
+            <h3 id="statAbednego" class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">--</h3>
+            <span id="statAbednegoPct" class="text-[11px] text-slate-500 font-medium">--% of total</span>
+          </div>
+          <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center">
+            <i data-lucide="award" class="w-5 h-5"></i>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- SEARCH & GROUP FILTER BAR (no-print) -->
+    <section id="controlsSection" class="bg-white rounded-2xl shadow-xs border border-slate-200 p-4 mb-6 no-print space-y-4">
+      
+      <!-- Group Tabs: All, Sadrak, Mesak, Abednego -->
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3 flex-wrap gap-2">
+        <div class="flex items-center space-x-1.5 overflow-x-auto w-full sm:w-auto scrollbar-none py-1">
+          <button onclick="selectGroupFilter('All')" id="tabGroupAll" class="group-tab px-4 py-2 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 bg-slate-900 text-white shadow-xs">
+            <span>All Members</span>
+            <span id="badgeTabAll" class="px-1.5 py-0.2 rounded-full text-[10px] bg-white/20">0</span>
+          </button>
+          <button onclick="selectGroupFilter('Sadrak')" id="tabGroupSadrak" class="group-tab px-4 py-2 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 text-slate-600 hover:bg-rose-50 hover:text-rose-700">
+            <span class="w-2 h-2 rounded-full bg-rose-600"></span>
+            <span>Sadrak</span>
+            <span id="badgeTabSadrak" class="px-1.5 py-0.2 rounded-full text-[10px] bg-slate-100 text-slate-600">0</span>
+          </button>
+          <button onclick="selectGroupFilter('Mesak')" id="tabGroupMesak" class="group-tab px-4 py-2 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 text-slate-600 hover:bg-emerald-50 hover:text-emerald-700">
+            <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+            <span>Mesak</span>
+            <span id="badgeTabMesak" class="px-1.5 py-0.2 rounded-full text-[10px] bg-slate-100 text-slate-600">0</span>
+          </button>
+          <button onclick="selectGroupFilter('Abednego')" id="tabGroupAbednego" class="group-tab px-4 py-2 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 text-slate-600 hover:bg-blue-50 hover:text-blue-700">
+            <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+            <span>Abednego</span>
+            <span id="badgeTabAbednego" class="px-1.5 py-0.2 rounded-full text-[10px] bg-slate-100 text-slate-600">0</span>
+          </button>
+        </div>
+
+        <!-- View Switcher (Table / Card) -->
+        <div class="flex items-center bg-slate-100 rounded-xl p-0.5 text-xs font-medium border border-slate-200">
+          <button onclick="setViewMode('table')" id="viewModeTable" class="px-3 py-1.5 rounded-lg flex items-center space-x-1 bg-white text-slate-900 shadow-xs font-semibold">
+            <i data-lucide="list" class="w-3.5 h-3.5"></i>
+            <span>Table</span>
+          </button>
+          <button onclick="setViewMode('cards')" id="viewModeCards" class="px-3 py-1.5 rounded-lg flex items-center space-x-1 text-slate-600 hover:text-slate-900">
+            <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i>
+            <span>Cards</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Search & Filters -->
+      <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
+        
+        <!-- Live Search Box -->
+        <div class="sm:col-span-8 relative">
+          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+          <input 
+            type="text" 
+            id="searchInput" 
+            oninput="handleSearchChange()" 
+            placeholder="Search by Name or Contact Number..." 
+            class="w-full pl-9 pr-8 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 focus:bg-white transition"
+          >
+          <button onclick="clearSearch()" id="clearSearchBtn" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+            <i data-lucide="x" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+
+        <!-- Sort By -->
+        <div class="sm:col-span-3">
+          <select id="sortBy" onchange="renderMembers()" class="w-full py-2.5 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:bg-white">
+            <option value="name-asc">Sort: Name (A to Z)</option>
+            <option value="name-desc">Sort: Name (Z to A)</option>
+            <option value="group-asc">Sort: Group (Sadrak, Mesak, Abednego)</option>
+          </select>
+        </div>
+
+        <!-- Reset Button -->
+        <div class="sm:col-span-1 flex justify-end">
+          <button onclick="resetAllFilters()" title="Reset Filters" class="w-full py-2.5 px-2 flex items-center justify-center rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-semibold transition">
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Result Count -->
+      <div class="flex items-center justify-between text-xs text-slate-500 pt-1">
+        <div>
+          Showing <span id="filteredCount" class="font-bold text-slate-900">0</span> of <span id="totalCount" class="font-bold text-slate-900">0</span> members
+        </div>
+        <div id="secretaryToolsLink" class="hidden">
+          <button onclick="openImportModal()" class="text-xs text-slate-500 hover:text-rose-900 flex items-center gap-1 font-medium">
+            <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+            <span>Import / Restore Backup</span>
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- MEMBERS LIST SECTION -->
+    <section class="space-y-4">
+
+      <!-- TABLE VIEW CONTAINER (Only: #, Member Name, Group, Contact, and Actions if Secretary) -->
+      <div id="tableViewWrapper" class="bg-white rounded-2xl shadow-xs border border-slate-200 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs sm:text-sm">
+            <thead>
+              <tr class="bg-slate-50 text-slate-700 font-bold border-b border-slate-200 text-[11px] uppercase tracking-wider">
+                <th class="py-3.5 px-4 w-12 text-center">#</th>
+                <th class="py-3.5 px-4">Member Name</th>
+                <th class="py-3.5 px-4 w-44">Group</th>
+                <th class="py-3.5 px-4">Contact</th>
+                <th id="thActions" class="py-3.5 px-4 text-center action-col w-28 hidden">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="membersTableBody" class="divide-y divide-slate-100">
+              <!-- Rendered rows -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="hidden py-16 px-4 text-center">
+          <div class="w-14 h-14 mx-auto mb-3 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center">
+            <i data-lucide="user-x" class="w-7 h-7"></i>
+          </div>
+          <h4 class="text-base font-bold text-slate-800">Member hmuh an ni lo</h4>
+          <p class="text-xs text-slate-500 max-w-sm mx-auto mt-1">
+            Zawnna mil he mi group-ah hian member an awm lo.
+          </p>
+          <button onclick="resetAllFilters()" class="mt-4 px-4 py-2 text-xs font-semibold rounded-xl bg-slate-900 text-white hover:bg-slate-800 transition">
+            Reset Filters
+          </button>
+        </div>
+      </div>
+
+      <!-- CARDS VIEW CONTAINER (Initially Hidden) -->
+      <div id="cardsViewWrapper" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <!-- Rendered cards -->
+      </div>
+
+    </section>
+
+    <!-- PRINT SIGNATURE BLOCK (Visible only on printout) -->
+    <div class="print-signatures hidden">
+      <div class="signature-line">
+        <p class="font-bold">( C. LALRINSANGA )</p>
+        <p class="text-[10px]">Branch Secretary</p>
+        <p class="text-[9px]">KṬP Armed Veng South Branch</p>
+      </div>
+      <div class="signature-line">
+        <p class="font-bold">( LALHRUAITLUANGA )</p>
+        <p class="text-[10px]">Branch Leader</p>
+        <p class="text-[9px]">KṬP Armed Veng South Branch</p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- LIGHT FOOTER -->
+  <footer class="bg-white border-t border-slate-200 mt-12 py-5 text-center text-xs text-slate-500 no-print">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <div class="flex items-center space-x-2">
+        <span class="font-bold text-slate-800">Kristian Ṭhalai Pawl, Armed Veng South Branch</span>
+      </div>
+      <p class="text-slate-400 text-xs">
+        Motto: <span class="italic text-slate-600">"Rawngbawl tura chhandam" (Ephesi 2:10)</span>
+      </p>
+      <div class="text-[11px] text-slate-400">
+        Groups: Sadrak • Mesak • Abednego
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- 1. BRANCH SECRETARY LOGIN MODAL -->
+  <div id="secretaryLoginModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden modal-backdrop">
+    <div class="bg-white rounded-3xl shadow-xl max-w-sm w-full overflow-hidden border border-slate-200 animate-in fade-in zoom-in-95 duration-150">
+      
+      <div class="p-6 text-center">
+        <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-800 flex items-center justify-center mx-auto mb-3">
+          <i data-lucide="lock" class="w-6 h-6"></i>
+        </div>
+        <h3 class="text-base font-bold text-slate-900">Branch Secretary Login</h3>
+        <p class="text-xs text-slate-500 mt-1">
+          Member thar dah, siamṭhat leh paih theih nan Secretary password chhu rawh le.
+        </p>
+
+        <form onsubmit="handleSecretaryLoginSubmit(event)" class="mt-4 space-y-3">
+          <div>
+            <input 
+              type="password" 
+              id="secretaryPasswordInput" 
+              required 
+              placeholder="Enter Secretary Password" 
+              class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-center font-mono focus:outline-none focus:ring-2 focus:ring-rose-500 focus:bg-white"
+            >
+            <p class="text-[11px] text-slate-400 mt-1.5 italic">
+              Default password: <span class="font-mono font-bold text-slate-600">avsktp</span>
+            </p>
+          </div>
+
+          <div class="flex items-center space-x-2 pt-2">
+            <button type="button" onclick="closeSecretaryLoginModal()" class="flex-1 py-2.5 text-xs font-semibold rounded-xl text-slate-600 hover:bg-slate-100 transition">
+              Cancel
+            </button>
+            <button type="submit" class="flex-1 py-2.5 text-xs font-bold rounded-xl bg-rose-900 text-white hover:bg-rose-800 transition shadow-xs">
+              Log In
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 2. ADD / EDIT MEMBER MODAL (Only accessed by Secretary) -->
+  <div id="memberModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden modal-backdrop">
+    <div class="bg-white rounded-3xl shadow-xl max-w-md w-full overflow-hidden border border-slate-200 animate-in fade-in zoom-in-95 duration-150">
+      
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+        <div>
+          <h3 id="modalTitle" class="text-base font-bold text-slate-900">Member Thar Dahna</h3>
+          <p class="text-xs text-slate-500">Branch Secretary Record</p>
+        </div>
+        <button onclick="closeMemberModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <form id="memberForm" onsubmit="handleMemberFormSubmit(event)" class="p-6 space-y-4">
+        <input type="hidden" id="formMemberId">
+
+        <!-- Member Name -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+            Member Name (Hming) <span class="text-rose-600">*</span>
+          </label>
+          <input 
+            type="text" 
+            id="formName" 
+            required 
+            placeholder="e.g. Lalhruaitluanga / Vanlalpeka" 
+            class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 focus:bg-white font-medium"
+          >
+        </div>
+
+        <!-- Group: Sadrak, Mesak, Abednego -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+            Group <span class="text-rose-600">*</span>
+          </label>
+          <select id="formGroup" required class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:bg-white">
+            <option value="Sadrak">Sadrak</option>
+            <option value="Mesak">Mesak</option>
+            <option value="Abednego">Abednego</option>
+          </select>
+        </div>
+
+        <!-- Contact (Phone Number) -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+            Contact Number <span class="text-rose-600">*</span>
+          </label>
+          <div class="relative">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">+91</span>
+            <input 
+              type="tel" 
+              id="formPhone" 
+              required 
+              placeholder="9862XXXXXX" 
+              pattern="[0-9]{10}"
+              title="Please enter 10 digits mobile number"
+              class="w-full pl-11 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 focus:bg-white font-medium"
+            >
+          </div>
+        </div>
+
+        <!-- Gender -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+            Gender
+          </label>
+          <select id="formGender" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 focus:bg-white">
+            <option value="Mipa">Mipa (Male)</option>
+            <option value="Hmeichhia">Hmeichhia (Female)</option>
+          </select>
+        </div>
+
+        <div class="pt-3 border-t border-slate-100 flex items-center justify-end space-x-2">
+          <button type="button" onclick="closeMemberModal()" class="px-4 py-2 text-xs font-semibold rounded-xl text-slate-600 hover:bg-slate-100 transition">
+            Cancel
+          </button>
+          <button type="submit" class="px-5 py-2 text-xs font-bold rounded-xl bg-rose-900 text-white hover:bg-rose-800 transition shadow-xs flex items-center gap-1.5">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            <span id="btnSubmitText">Save Member</span>
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- 3. DELETE CONFIRMATION MODAL -->
+  <div id="deleteModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden modal-backdrop">
+    <div class="bg-white rounded-3xl shadow-xl max-w-sm w-full overflow-hidden border border-slate-200">
+      <div class="p-6 text-center space-y-3">
+        <div class="w-12 h-12 rounded-full bg-rose-50 text-rose-700 flex items-center justify-center mx-auto">
+          <i data-lucide="trash-2" class="w-6 h-6"></i>
+        </div>
+        <h4 class="text-base font-bold text-slate-900">Member paih i duh tak tak em?</h4>
+        <p class="text-xs text-slate-500">
+          <span id="deleteMemberName" class="font-bold text-slate-800"></span> hi member list aṭangin paih a ni ang.
+        </p>
+        <div class="pt-3 flex items-center justify-center space-x-2">
+          <button onclick="closeDeleteModal()" class="px-4 py-2 text-xs font-semibold rounded-xl text-slate-600 hover:bg-slate-100 transition">
+            Cancel
+          </button>
+          <button onclick="confirmDeleteMember()" class="px-5 py-2 text-xs font-bold rounded-xl bg-rose-600 text-white hover:bg-rose-700 transition shadow-xs">
+            Paih rawh (Delete)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. IMPORT / RESTORE BACKUP MODAL -->
+  <div id="importModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden modal-backdrop">
+    <div class="bg-white rounded-3xl shadow-xl max-w-md w-full overflow-hidden border border-slate-200">
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+        <h3 class="text-base font-bold text-slate-900">Import / Restore Backup</h3>
+        <button onclick="closeImportModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <div class="p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Thlang rawh Backup File (JSON / CSV)</label>
+          <input type="file" id="importFileInput" accept=".json,.csv" class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200">
+        </div>
+        <div class="pt-3 border-t border-slate-100 flex items-center justify-end space-x-2">
+          <button onclick="closeImportModal()" class="px-4 py-2 text-xs font-semibold rounded-xl text-slate-600 hover:bg-slate-100">Cancel</button>
+          <button onclick="handleImportFile()" class="px-5 py-2 text-xs font-bold rounded-xl bg-rose-900 text-white hover:bg-rose-800">Import Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none no-print"></div>
+
+  <!-- Application Logic -->
+  <script src="app.js"></script>
+</body>
+</html>
