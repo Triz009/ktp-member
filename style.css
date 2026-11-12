@@ -50,6 +50,28 @@ h1, h2, h3, h4, .brand-font {
   border: 1px solid #bfdbfe;
 }
 
+/* Notice Category Badges */
+.badge-cat-inkhawm {
+  background-color: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+.badge-cat-hnatlang {
+  background-color: #fffbeb;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+.badge-cat-zaipawl {
+  background-color: #faf5ff;
+  color: #6b21a8;
+  border: 1px solid #e9d5ff;
+}
+.badge-cat-general {
+  background-color: #eff6ff;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
+}
+
 /* Group Cards */
 .group-card-sadrak {
   border-color: #fca5a5;
@@ -78,6 +100,23 @@ h1, h2, h3, h4, .brand-font {
   box-shadow: 0 8px 20px -4px rgba(59, 130, 246, 0.12);
 }
 
+/* Passport Photo Previews */
+.passport-box {
+  width: 100px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 2px solid #e2e8f0;
+}
+
+.passport-thumb {
+  width: 38px;
+  height: 46px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+}
+
 /* Modal Backdrop */
 .modal-backdrop {
   backdrop-filter: blur(4px);
@@ -98,7 +137,8 @@ h1, h2, h3, h4, .brand-font {
   #actionButtons,
   #toastContainer,
   header .action-btns,
-  .action-col {
+  .action-col,
+  #mainNavTabs {
     display: none !important;
   }
 
@@ -113,12 +153,12 @@ h1, h2, h3, h4, .brand-font {
   table {
     width: 100% !important;
     border-collapse: collapse !important;
-    font-size: 10.5pt !important;
+    font-size: 10pt !important;
   }
 
   th, td {
     border: 1px solid #94a3b8 !important;
-    padding: 8px 10px !important;
+    padding: 6px 8px !important;
     color: #000000 !important;
   }
 
@@ -137,7 +177,7 @@ h1, h2, h3, h4, .brand-font {
   .print-signatures {
     display: flex !important;
     justify-content: space-between;
-    margin-top: 60px;
+    margin-top: 50px;
     padding: 0 40px;
   }
 
