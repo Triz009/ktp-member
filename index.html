@@ -336,18 +336,33 @@
         <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
           
           <!-- Live Search Box -->
-          <div class="sm:col-span-8 relative">
+          <div class="sm:col-span-5 relative">
             <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
             <input 
               type="text" 
               id="searchInput" 
               oninput="handleSearchChange()" 
-              placeholder="Search by Name, Contact Number, H/No, or Upa Bial..." 
+              placeholder="Search Name, Phone, H/No, or Upa Bial..." 
               class="w-full pl-9 pr-8 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 focus:bg-white transition"
             >
             <button onclick="clearSearch()" id="clearSearchBtn" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
               <i data-lucide="x" class="w-3.5 h-3.5"></i>
             </button>
+          </div>
+
+          <!-- Filter by Upa Bial (Dedicated Elder Section Filter) -->
+          <div class="sm:col-span-3">
+            <select id="filterUpaBial" onchange="renderMembers()" class="w-full py-2.5 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:bg-white">
+              <option value="All">All Upa Bial (1 - 8)</option>
+              <option value="Upa Bial 1">Upa Bial 1</option>
+              <option value="Upa Bial 2">Upa Bial 2</option>
+              <option value="Upa Bial 3">Upa Bial 3</option>
+              <option value="Upa Bial 4">Upa Bial 4</option>
+              <option value="Upa Bial 5">Upa Bial 5</option>
+              <option value="Upa Bial 6">Upa Bial 6</option>
+              <option value="Upa Bial 7">Upa Bial 7</option>
+              <option value="Upa Bial 8">Upa Bial 8</option>
+            </select>
           </div>
 
           <!-- Sort By -->
@@ -639,39 +654,36 @@
           </div>
         </div>
 
-        <!-- Gender & House No -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <!-- Gender -->
-          <div>
-            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-              Gender (Mipa / Hmeichhia)
-            </label>
-            <select id="selfRegGender" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white">
-              <option value="Mipa">Mipa (Male)</option>
-              <option value="Hmeichhia">Hmeichhia (Female)</option>
-            </select>
-          </div>
-
-          <!-- House No -->
-          <div>
-            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-              In No. (House No.)
-            </label>
-            <input 
-              type="text" 
-              id="selfRegHouseNo" 
-              placeholder="e.g. H-24 / A-15" 
-              class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white"
-            >
-          </div>
-        </div>
-
-        <!-- Upa Bial Selection -->
+        <!-- Gender Selection -->
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-            Upa Bial (Elder Section)
+            Gender (Mipa / Hmeichhia)
           </label>
-          <select id="selfRegUpaBial" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white">
+          <select id="selfRegGender" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white">
+            <option value="Mipa">Mipa (Male)</option>
+            <option value="Hmeichhia">Hmeichhia (Female)</option>
+          </select>
+        </div>
+
+        <!-- 1. In No. (House No.) - SEPARATE FIELD -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+            In No. (House No. / H/No.)
+          </label>
+          <input 
+            type="text" 
+            id="selfRegHouseNo" 
+            placeholder="e.g. H-14 / H-28 / A-05" 
+            class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white font-medium"
+          >
+        </div>
+
+        <!-- 2. Upa Bial - SEPARATE FIELD -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+            Upa Bial (Kohhran Elder Section 1 - 8)
+          </label>
+          <select id="selfRegUpaBial" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white">
             <option value="Upa Bial 1">Upa Bial 1</option>
             <option value="Upa Bial 2">Upa Bial 2</option>
             <option value="Upa Bial 3">Upa Bial 3</option>
@@ -806,31 +818,30 @@
           </div>
         </div>
 
-        <!-- Gender & House No -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Gender</label>
-            <select id="formGender" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 focus:bg-white">
-              <option value="Mipa">Mipa (Male)</option>
-              <option value="Hmeichhia">Hmeichhia (Female)</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">In No. (House No.)</label>
-            <input 
-              type="text" 
-              id="formHouseNo" 
-              placeholder="e.g. H-14" 
-              class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 focus:bg-white"
-            >
-          </div>
+        <!-- Gender -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Gender</label>
+          <select id="formGender" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 focus:bg-white">
+            <option value="Mipa">Mipa (Male)</option>
+            <option value="Hmeichhia">Hmeichhia (Female)</option>
+          </select>
         </div>
 
-        <!-- Upa Bial -->
+        <!-- 1. In No. (House No.) - SEPARATE FIELD -->
         <div>
-          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Upa Bial</label>
-          <select id="formUpaBial" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:bg-white">
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">In No. (House No. / H/No.)</label>
+          <input 
+            type="text" 
+            id="formHouseNo" 
+            placeholder="e.g. H-14 / H-28 / A-05" 
+            class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 focus:bg-white font-medium"
+          >
+        </div>
+
+        <!-- 2. Upa Bial - SEPARATE FIELD -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Upa Bial (Kohhran Elder Section 1 - 8)</label>
+          <select id="formUpaBial" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:bg-white">
             <option value="Upa Bial 1">Upa Bial 1</option>
             <option value="Upa Bial 2">Upa Bial 2</option>
             <option value="Upa Bial 3">Upa Bial 3</option>

@@ -898,14 +898,20 @@ async function handleNoticeFormSubmit(e) {
 function renderMembers() {
   const searchVal = (document.getElementById('searchInput')?.value || '').trim().toLowerCase();
   const sortVal = document.getElementById('sortBy')?.value || 'name-asc';
+  const upaBialVal = document.getElementById('filterUpaBial')?.value || 'All';
 
   filteredMembers = members.filter(member => {
-    // Group filter
+    // 1. Group filter (Sadrak, Mesak, Abednego)
     if (activeGroupFilter !== 'All' && member.group !== activeGroupFilter) {
       return false;
     }
 
-    // Search query
+    // 2. Upa Bial filter (Separate filter)
+    if (upaBialVal !== 'All' && member.upaBial !== upaBialVal) {
+      return false;
+    }
+
+    // 3. Search query
     if (searchVal) {
       const matchName = (member.name || '').toLowerCase().includes(searchVal);
       const matchPhone = (member.phone || '').includes(searchVal);
@@ -1175,10 +1181,16 @@ function renderCardsGrid() {
             <div class="min-w-0 flex-1">
               <h4 class="font-bold text-slate-900 text-sm truncate">${escapeHtml(member.name)}</h4>
               <p class="text-[11px] text-slate-500">${member.gender === 'Mipa' ? 'Mipa' : 'Hmeichhia'}</p>
-              <div class="flex items-center gap-1.5 mt-1 text-[11px]">
-                <span class="font-bold text-slate-700">${escapeHtml(member.houseNo || '-')}</span>
-                <span class="text-slate-300">•</span>
-                <span class="text-slate-500 font-medium">${escapeHtml(member.upaBial || '-')}</span>
+              <!-- Distinct separate rows for H/No. and Upa Bial -->
+              <div class="mt-2 space-y-1 text-[11px]">
+                <div class="flex items-center justify-between bg-slate-50 px-2 py-0.5 rounded border border-slate-100">
+                  <span class="text-slate-400 font-semibold uppercase text-[10px]">H/No:</span>
+                  <span class="font-mono font-bold text-slate-800">${escapeHtml(member.houseNo || '-')}</span>
+                </div>
+                <div class="flex items-center justify-between bg-slate-50 px-2 py-0.5 rounded border border-slate-100">
+                  <span class="text-slate-400 font-semibold uppercase text-[10px]">Upa Bial:</span>
+                  <span class="font-semibold text-slate-700">${escapeHtml(member.upaBial || '-')}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -1321,6 +1333,8 @@ function resetAllFilters() {
   if (clearBtn) clearBtn.classList.add('hidden');
   const sortBy = document.getElementById('sortBy');
   if (sortBy) sortBy.value = 'name-asc';
+  const filterUpaBial = document.getElementById('filterUpaBial');
+  if (filterUpaBial) filterUpaBial.value = 'All';
 
   selectGroupFilter('All');
   showToast('Filters reset vek a ni ta.', 'info');
