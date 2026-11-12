@@ -921,6 +921,47 @@
           </div>
         </div>
 
+        <!-- Programme Flyer / Photo Upload Section -->
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+              <i data-lucide="image" class="w-4 h-4 text-amber-700"></i>
+              <span>Programme Flyer / Thlalak (Optional)</span>
+            </label>
+            <span id="noticePhotoSizeBadge" class="hidden px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
+              WebP Compressed
+            </span>
+          </div>
+
+          <!-- Preview Area -->
+          <div id="noticePhotoPreviewWrapper" class="hidden relative rounded-xl overflow-hidden border border-slate-200 bg-white max-h-64 flex items-center justify-center p-2">
+            <img id="noticePhotoPreview" src="" alt="Notice Flyer Preview" class="max-h-60 w-auto rounded-lg object-contain shadow-xs">
+            <button type="button" onclick="clearNoticePhoto()" class="absolute top-3 right-3 px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg shadow-md flex items-center gap-1 transition cursor-pointer">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              <span>Paih rawh</span>
+            </button>
+          </div>
+
+          <!-- Upload Controls -->
+          <div id="noticePhotoUploadBox" class="space-y-2">
+            <input type="file" id="noticeCameraInput" accept="image/*" capture="user" onchange="handleNoticePhotoUpload(event)" style="display: none;">
+            <input type="file" id="noticeGalleryInput" accept="image/*" onchange="handleNoticePhotoUpload(event)" style="display: none;">
+
+            <div class="flex items-center gap-2 flex-wrap">
+              <button type="button" onclick="document.getElementById('noticeCameraInput').click()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-xs cursor-pointer active:scale-95">
+                <i data-lucide="camera" class="w-4 h-4"></i>
+                <span>Camera Capture</span>
+              </button>
+
+              <button type="button" onclick="document.getElementById('noticeGalleryInput').click()" class="px-3.5 py-2 bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-2xs cursor-pointer active:scale-95">
+                <i data-lucide="upload" class="w-4 h-4 text-slate-500"></i>
+                <span>Upload Flyer / Poster Image</span>
+              </button>
+            </div>
+            <p class="text-[11px] text-slate-500">Inkhawm Programme flyer, Hnatlang / Zaipawl poster upload nan. Automatic-in <b>WebP</b>-ah a convert ang.</p>
+          </div>
+        </div>
+
         <!-- Notice Content -->
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
@@ -1035,10 +1076,22 @@
     </div>
   </div>
 
+  <!-- 7. LIGHTBOX MODAL FOR FULL-SIZE NOTICE FLYERS / PHOTOS -->
+  <div id="imageLightboxModal" onclick="closeLightboxModal()" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden modal-backdrop bg-black/80 cursor-pointer">
+    <div class="relative max-w-4xl max-h-[92vh] p-2 flex flex-col items-center" onclick="event.stopPropagation()">
+      <button onclick="closeLightboxModal()" class="absolute -top-10 right-0 text-white hover:text-rose-400 p-2 text-sm font-bold flex items-center gap-1 cursor-pointer">
+        <i data-lucide="x" class="w-5 h-5"></i>
+        <span>Kharkhana (Close)</span>
+      </button>
+      <img id="lightboxImage" src="" alt="Notice Flyer" class="max-h-[85vh] max-w-full rounded-2xl shadow-2xl object-contain bg-white">
+      <p id="lightboxCaption" class="text-white text-xs font-bold mt-2 text-center"></p>
+    </div>
+  </div>
+
   <!-- TOAST NOTIFICATION CONTAINER -->
   <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none no-print"></div>
 
   <!-- Application Logic (Cache-busted) -->
-  <script src="app.js?v=20261112e"></script>
+  <script src="app.js?v=20261112f"></script>
 </body>
 </html>

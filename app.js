@@ -17,6 +17,7 @@ let currentTab = 'directory';
 // Image data holders
 let currentSelfRegPhoto = '';
 let currentFormPhoto = '';
+let currentNoticePhoto = '';
 
 // Delete modal state
 let deleteActionType = null; // 'member' | 'notice'
@@ -423,6 +424,118 @@ function clearFormPhoto() {
   if (removeBtn) removeBtn.classList.add('hidden');
 }
 
+// ==================== NOTICE BOARD FLYER / PHOTO PROCESSING ====================
+
+function processNoticeFlyerImage(file, callback) {
+  if (!file || !file.type.startsWith('image/')) {
+    showToast('Khawngaihin image / thlalak dik file thlang rawh.', 'error');
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = function() {
+      // Scale down proportionally so max dimension is 1000px (keeps text sharp)
+      const maxDim = 1000;
+      let width = img.width;
+      let height = img.height;
+
+      if (width > maxDim || height > maxDim) {
+        if (width > height) {
+          height = Math.round((height * maxDim) / width);
+          width = maxDim;
+        } else {
+          width = Math.round((width * maxDim) / height);
+          height = maxDim;
+        }
+      }
+
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(img, 0, 0, width, height);
+
+      let dataUrl = canvas.toDataURL('image/webp', 0.75);
+      if (!dataUrl || !dataUrl.startsWith('data:image/webp')) {
+        dataUrl = canvas.toDataURL('image/jpeg', 0.75);
+      }
+
+      const sizeKB = (dataUrl.length * 0.75 / 1024).toFixed(1);
+      callback(dataUrl, sizeKB);
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function handleNoticePhotoUpload(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  processNoticeFlyerImage(file, (dataUrl, sizeKB) => {
+    currentNoticePhoto = dataUrl;
+    const preview = document.getElementById('noticePhotoPreview');
+    const wrapper = document.getElementById('noticePhotoPreviewWrapper');
+    const uploadBox = document.getElementById('noticePhotoUploadBox');
+    const badge = document.getElementById('noticePhotoSizeBadge');
+
+    if (preview) preview.src = dataUrl;
+    if (wrapper) wrapper.classList.remove('hidden');
+    if (uploadBox) uploadBox.classList.add('hidden');
+    if (badge) {
+      badge.textContent = `${sizeKB} KB (WebP)`;
+      badge.classList.remove('hidden');
+    }
+    showToast(`Flyer WebP (${sizeKB} KB)-ah convert a ni ta!`, 'success');
+  });
+
+  event.target.value = '';
+}
+
+function clearNoticePhoto() {
+  currentNoticePhoto = '';
+  const preview = document.getElementById('noticePhotoPreview');
+  const wrapper = document.getElementById('noticePhotoPreviewWrapper');
+  const uploadBox = document.getElementById('noticePhotoUploadBox');
+  const badge = document.getElementById('noticePhotoSizeBadge');
+
+  if (preview) preview.src = '';
+  if (wrapper) wrapper.classList.add('hidden');
+  if (uploadBox) uploadBox.classList.remove('hidden');
+  if (badge) badge.classList.add('hidden');
+}
+
+// Lightbox for Full-Size Notice Flyers
+function openLightboxModal(imgSrc, title) {
+  const modal = document.getElementById('imageLightboxModal');
+  const img = document.getElementById('lightboxImage');
+  const caption = document.getElementById('lightboxCaption');
+
+  if (img) img.src = imgSrc;
+  if (caption) caption.textContent = title || '';
+  if (modal) {
+    modal.classList.remove('hidden');
+    modal.style.display = 'flex';
+  }
+}
+
+function closeLightboxModal() {
+  const modal = document.getElementById('imageLightboxModal');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
+  }
+}
+
+window.openLightboxModal = openLightboxModal;
+window.closeLightboxModal = closeLightboxModal;
+window.clearNoticePhoto = clearNoticePhoto;
+window.handleNoticePhotoUpload = handleNoticePhotoUpload;
+
 // ==================== SELF-REGISTRATION (PUBLIC MEMBERS) ====================
 
 function openSelfRegisterModal() {
@@ -670,6 +783,17 @@ function renderNotices() {
     const formattedDate = formatNoticeDate(notice.date);
     const contentHtml = escapeHtml(notice.content || '').replace(/\n/g, '<br>');
 
+    // Flyer Image HTML if notice has a photo
+    const flyerHtml = notice.photo ? `
+      <div class="mb-3.5 rounded-xl overflow-hidden border border-slate-200 bg-slate-50 relative group cursor-pointer shadow-2xs" onclick="openLightboxModal('${escapeHtml(notice.photo)}', '${escapeHtml(notice.title)}')">
+        <img src="${notice.photo}" alt="${escapeHtml(notice.title)}" class="w-full max-h-72 object-contain bg-slate-100/60 group-hover:opacity-95 transition">
+        <div class="absolute bottom-2.5 right-2.5 bg-slate-900/80 hover:bg-slate-900 text-white text-[11px] font-bold px-3 py-1.5 rounded-xl backdrop-blur-xs flex items-center gap-1.5 shadow-md">
+          <i data-lucide="maximize-2" class="w-3.5 h-3.5"></i>
+          <span>En lian rawh (View Flyer)</span>
+        </div>
+      </div>
+    ` : '';
+
     return `
       <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs hover:border-slate-300 transition flex flex-col justify-between">
         <div>
@@ -689,6 +813,8 @@ function renderNotices() {
           <h4 class="text-base font-bold text-slate-900 leading-snug mb-2">
             ${escapeHtml(notice.title)}
           </h4>
+
+          ${flyerHtml}
 
           <!-- Content Body -->
           <div class="text-xs sm:text-sm text-slate-600 space-y-1.5 leading-relaxed bg-slate-50/60 p-3.5 rounded-xl border border-slate-100">
@@ -772,11 +898,12 @@ function shareNoticeWhatsApp(id) {
   const notice = notices.find(n => String(n.id) === String(id));
   if (!notice) return;
 
+  const flyerText = notice.photo ? '\n📷 *[Programme Flyer / Poster thlalak a tel e - Website-ah en theih a ni]*' : '';
   const text = `📢 *KṬP ARMED VENG SOUTH BRANCH - HRIATTIRNA*
 
 📌 *${notice.title}*
 📅 Ni: ${formatNoticeDate(notice.date)}
-🏷 Category: ${notice.category}
+🏷 Category: ${notice.category}${flyerText}
 
 ${notice.content}
 
@@ -793,6 +920,8 @@ function openNoticeModal(id = null) {
     openSecretaryLoginModal();
     return;
   }
+
+  clearNoticePhoto();
 
   const modal = document.getElementById('noticeModal');
   const titleInput = document.getElementById('formNoticeTitle');
@@ -814,6 +943,16 @@ function openNoticeModal(id = null) {
     if (contentInput) contentInput.value = notice.content || '';
     if (titleEl) titleEl.textContent = 'Notice Siamthatna';
     if (btnSubmitText) btnSubmitText.textContent = 'Siamṭha rawh (Update Notice)';
+
+    if (notice.photo) {
+      currentNoticePhoto = notice.photo;
+      const preview = document.getElementById('noticePhotoPreview');
+      const wrapper = document.getElementById('noticePhotoPreviewWrapper');
+      const uploadBox = document.getElementById('noticePhotoUploadBox');
+      if (preview) preview.src = notice.photo;
+      if (wrapper) wrapper.classList.remove('hidden');
+      if (uploadBox) uploadBox.classList.add('hidden');
+    }
   } else {
     // Add New Notice
     if (idInput) idInput.value = '';
@@ -833,6 +972,7 @@ function openNoticeModal(id = null) {
 }
 
 function closeNoticeModal() {
+  clearNoticePhoto();
   const modal = document.getElementById('noticeModal');
   if (modal) {
     modal.classList.add('hidden');
@@ -867,7 +1007,8 @@ async function handleNoticeFormSubmit(e) {
         title,
         category,
         date: date || new Date().toISOString().slice(0, 10),
-        content
+        content,
+        photo: currentNoticePhoto || notices[idx].photo || ''
       };
       saveNoticesToLocalStorage(notices);
       syncNoticesToServer(notices);
@@ -881,7 +1022,8 @@ async function handleNoticeFormSubmit(e) {
       category,
       date: date || new Date().toISOString().slice(0, 10),
       author: 'Branch Secretary',
-      content
+      content,
+      photo: currentNoticePhoto || ''
     };
     notices.unshift(newNotice);
     saveNoticesToLocalStorage(notices);
