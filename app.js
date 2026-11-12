@@ -231,12 +231,20 @@ function updateSecretaryUI() {
 function openSecretaryLoginModal() {
   const input = document.getElementById('secretaryPasswordInput');
   if (input) input.value = '';
-  document.getElementById('secretaryLoginModal').classList.remove('hidden');
+  const modal = document.getElementById('secretaryLoginModal');
+  if (modal) {
+    modal.classList.remove('hidden');
+    modal.style.display = 'flex';
+  }
   if (input) input.focus();
 }
 
 function closeSecretaryLoginModal() {
-  document.getElementById('secretaryLoginModal').classList.add('hidden');
+  const modal = document.getElementById('secretaryLoginModal');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
+  }
 }
 
 function getSecretaryPassword() {
@@ -418,21 +426,46 @@ function clearFormPhoto() {
 // ==================== SELF-REGISTRATION (PUBLIC MEMBERS) ====================
 
 function openSelfRegisterModal() {
-  clearSelfRegPhoto();
-  document.getElementById('selfRegName').value = '';
-  document.getElementById('selfRegPhone').value = '';
-  document.getElementById('selfRegHouseNo').value = '';
-  document.getElementById('selfRegGroup').value = activeGroupFilter !== 'All' ? activeGroupFilter : 'Sadrak';
-  document.getElementById('selfRegGender').value = 'Mipa';
-  document.getElementById('selfRegUpaBial').value = 'Upa Bial 1';
+  try {
+    clearSelfRegPhoto();
+    const nameEl = document.getElementById('selfRegName');
+    const phoneEl = document.getElementById('selfRegPhone');
+    const houseEl = document.getElementById('selfRegHouseNo');
+    const groupEl = document.getElementById('selfRegGroup');
+    const genderEl = document.getElementById('selfRegGender');
+    const bialEl = document.getElementById('selfRegUpaBial');
+    const modalEl = document.getElementById('selfRegisterModal');
 
-  document.getElementById('selfRegisterModal').classList.remove('hidden');
-  document.getElementById('selfRegName').focus();
+    if (nameEl) nameEl.value = '';
+    if (phoneEl) phoneEl.value = '';
+    if (houseEl) houseEl.value = '';
+    if (groupEl) groupEl.value = (activeGroupFilter && activeGroupFilter !== 'All') ? activeGroupFilter : 'Sadrak';
+    if (genderEl) genderEl.value = 'Mipa';
+    if (bialEl) bialEl.value = 'Upa Bial 1';
+
+    if (modalEl) {
+      modalEl.classList.remove('hidden');
+      modalEl.style.display = 'flex';
+    }
+    if (nameEl) {
+      setTimeout(() => nameEl.focus(), 60);
+    }
+  } catch (err) {
+    console.error('Error opening self register modal:', err);
+  }
 }
 
 function closeSelfRegisterModal() {
-  document.getElementById('selfRegisterModal').classList.add('hidden');
+  const modalEl = document.getElementById('selfRegisterModal');
+  if (modalEl) {
+    modalEl.classList.add('hidden');
+    modalEl.style.display = 'none';
+  }
 }
+
+// Global window exposure
+window.openSelfRegisterModal = openSelfRegisterModal;
+window.closeSelfRegisterModal = closeSelfRegisterModal;
 
 async function handleSelfRegisterSubmit(e) {
   e.preventDefault();
@@ -792,12 +825,19 @@ function openNoticeModal(id = null) {
     if (btnSubmitText) btnSubmitText.textContent = 'Tarchhuak Rawh (Post Notice)';
   }
 
-  modal.classList.remove('hidden');
+  if (modal) {
+    modal.classList.remove('hidden');
+    modal.style.display = 'flex';
+  }
   if (titleInput) titleInput.focus();
 }
 
 function closeNoticeModal() {
-  document.getElementById('noticeModal').classList.add('hidden');
+  const modal = document.getElementById('noticeModal');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
+  }
 }
 
 async function handleNoticeFormSubmit(e) {
@@ -957,7 +997,7 @@ function getAvatarData(name) {
   return { initials, colorClass };
 }
 
-// Render Table Rows (Columns: #, Member Name with Photo, Group, H/No. & Upa Bial, Contact, Actions)
+// Render Table Rows (Columns: #, Photo, Member Name, Group, H/No., Upa Bial, Contact, Actions)
 function renderTableRows() {
   const tbody = document.getElementById('membersTableBody');
   if (!tbody) return;
@@ -976,49 +1016,53 @@ function renderTableRows() {
       : cleanPhone;
 
     // Passport Photo or Initials Avatar
-    const photoHtml = member.photo
-      ? `<img src="${member.photo}" alt="${escapeHtml(member.name)}" class="passport-thumb flex-shrink-0" onerror="this.style.display='none';this.nextElementSibling.classList.remove('hidden')"><div class="w-9 h-11 rounded-lg bg-gradient-to-br ${colorClass} text-white font-bold text-xs flex items-center justify-center flex-shrink-0 hidden">${initials}</div>`
-      : `<div class="w-9 h-11 rounded-lg bg-gradient-to-br ${colorClass} text-white font-bold text-xs flex items-center justify-center flex-shrink-0">${initials}</div>`;
+    const photoCell = member.photo
+      ? `<img src="${member.photo}" alt="${escapeHtml(member.name)}" class="passport-thumb mx-auto shadow-2xs" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="w-10 h-12 rounded-lg bg-gradient-to-br ${colorClass} text-white font-bold text-xs items-center justify-center mx-auto shadow-2xs" style="display:none;">${initials}</div>`
+      : `<div class="w-10 h-12 rounded-lg bg-gradient-to-br ${colorClass} text-white font-bold text-xs flex items-center justify-center mx-auto shadow-2xs">${initials}</div>`;
 
     return `
       <tr class="hover:bg-slate-50 transition-colors border-b border-slate-100 group">
-        <!-- Index -->
+        <!-- 1. Index -->
         <td class="py-3 px-3 text-center font-mono text-xs text-slate-400">
           ${index + 1}
         </td>
 
-        <!-- Member Name & Passport Photo -->
+        <!-- 2. Photo Column -->
+        <td class="py-2.5 px-3 text-center">
+          ${photoCell}
+        </td>
+
+        <!-- 3. Member Name -->
         <td class="py-3 px-4">
-          <div class="flex items-center space-x-3">
-            ${photoHtml}
-            <div class="min-w-0">
-              <span class="font-bold text-slate-900 text-sm block truncate">${escapeHtml(member.name)}</span>
-              <span class="text-[11px] text-slate-500 font-medium">${member.gender === 'Mipa' ? 'Mipa' : 'Hmeichhia'}</span>
-            </div>
+          <div class="min-w-0">
+            <span class="font-bold text-slate-900 text-sm block">${escapeHtml(member.name)}</span>
+            <span class="text-[11px] text-slate-500 font-medium">${member.gender === 'Mipa' ? 'Mipa' : 'Hmeichhia'}</span>
           </div>
         </td>
 
-        <!-- Group (Sadrak, Mesak, Abednego) -->
-        <td class="py-3 px-4">
+        <!-- 4. Group (Sadrak, Mesak, Abednego) -->
+        <td class="py-3 px-3">
           <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold ${groupCfg.badgeClass}">
             <span class="w-2 h-2 rounded-full ${groupCfg.dotColor} mr-1.5"></span>
             ${escapeHtml(member.group)}
           </span>
         </td>
 
-        <!-- House No & Upa Bial -->
-        <td class="py-3 px-4">
-          <div class="space-y-0.5">
-            <span class="font-bold text-slate-800 text-xs block">
-              ${escapeHtml(member.houseNo || '-')}
-            </span>
-            <span class="inline-block text-[11px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">
-              ${escapeHtml(member.upaBial || '-')}
-            </span>
-          </div>
+        <!-- 5. H/No. (House No.) - SEPARATE COLUMN -->
+        <td class="py-3 px-3">
+          <span class="font-bold text-slate-800 text-xs font-mono bg-slate-100 px-2.5 py-1 rounded-md border border-slate-200 inline-block">
+            ${escapeHtml(member.houseNo || '-')}
+          </span>
         </td>
 
-        <!-- Contact (1-Click WhatsApp, Call, Copy, vCard) -->
+        <!-- 6. Upa Bial (Elder Section) - SEPARATE COLUMN -->
+        <td class="py-3 px-3">
+          <span class="inline-flex items-center text-xs font-semibold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-md border border-slate-200">
+            ${escapeHtml(member.upaBial || '-')}
+          </span>
+        </td>
+
+        <!-- 7. Contact (Phone, WhatsApp, Call, vCard, Copy) - SEPARATE COLUMN -->
         <td class="py-3 px-4">
           <div class="flex items-center space-x-2">
             <span class="font-mono text-xs font-bold text-slate-800 tracking-wide">${formattedPhone}</span>
@@ -1060,7 +1104,7 @@ function renderTableRows() {
           </div>
         </td>
 
-        <!-- Actions (Only when Secretary is logged in) -->
+        <!-- 8. Actions (Only when Secretary is logged in) -->
         ${isSecretaryLoggedIn ? `
           <td class="py-3 px-4 text-center action-col">
             <div class="flex items-center justify-center space-x-1">
@@ -1326,7 +1370,11 @@ function openAddMemberModal() {
   document.getElementById('formHouseNo').value = '';
   document.getElementById('formUpaBial').value = 'Upa Bial 1';
 
-  document.getElementById('memberModal').classList.remove('hidden');
+  const modal = document.getElementById('memberModal');
+  if (modal) {
+    modal.classList.remove('hidden');
+    modal.style.display = 'flex';
+  }
   document.getElementById('formName').focus();
 }
 
@@ -1358,16 +1406,31 @@ function openEditMemberModal(id) {
     if (preview) {
       preview.src = member.photo;
       preview.classList.remove('hidden');
+      preview.style.display = 'block';
     }
-    if (placeholder) placeholder.classList.add('hidden');
-    if (removeBtn) removeBtn.classList.remove('hidden');
+    if (placeholder) {
+      placeholder.classList.add('hidden');
+      placeholder.style.display = 'none';
+    }
+    if (removeBtn) {
+      removeBtn.classList.remove('hidden');
+      removeBtn.style.display = 'flex';
+    }
   }
 
-  document.getElementById('memberModal').classList.remove('hidden');
+  const modal = document.getElementById('memberModal');
+  if (modal) {
+    modal.classList.remove('hidden');
+    modal.style.display = 'flex';
+  }
 }
 
 function closeMemberModal() {
-  document.getElementById('memberModal').classList.add('hidden');
+  const modal = document.getElementById('memberModal');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
+  }
 }
 
 async function handleSecretaryMemberSubmit(e) {
@@ -1460,7 +1523,11 @@ function openDeleteModal(id) {
 
   document.getElementById('deleteModalTitle').textContent = 'Member paih i duh tak tak em?';
   document.getElementById('deleteItemName').textContent = member.name;
-  document.getElementById('deleteModal').classList.remove('hidden');
+  const modal = document.getElementById('deleteModal');
+  if (modal) {
+    modal.classList.remove('hidden');
+    modal.style.display = 'flex';
+  }
 }
 
 function openDeleteNoticeModal(id) {
@@ -1476,13 +1543,21 @@ function openDeleteNoticeModal(id) {
 
   document.getElementById('deleteModalTitle').textContent = 'Notice paih i duh tak tak em?';
   document.getElementById('deleteItemName').textContent = notice.title;
-  document.getElementById('deleteModal').classList.remove('hidden');
+  const modal = document.getElementById('deleteModal');
+  if (modal) {
+    modal.classList.remove('hidden');
+    modal.style.display = 'flex';
+  }
 }
 
 function closeDeleteModal() {
   deleteActionType = null;
   deleteTargetId = null;
-  document.getElementById('deleteModal').classList.add('hidden');
+  const modal = document.getElementById('deleteModal');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
+  }
 }
 
 function confirmDeleteAction() {
@@ -1571,11 +1646,19 @@ function openImportModal() {
     openSecretaryLoginModal();
     return;
   }
-  document.getElementById('importModal').classList.remove('hidden');
+  const modal = document.getElementById('importModal');
+  if (modal) {
+    modal.classList.remove('hidden');
+    modal.style.display = 'flex';
+  }
 }
 
 function closeImportModal() {
-  document.getElementById('importModal').classList.add('hidden');
+  const modal = document.getElementById('importModal');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
+  }
   document.getElementById('importFileInput').value = '';
 }
 

@@ -86,7 +86,7 @@
         <div class="flex items-center space-x-2 sm:space-x-2.5 action-btns flex-wrap justify-end">
           
           <!-- SELF REGISTRATION BUTTON (Anyone can add themselves) -->
-          <button onclick="openSelfRegisterModal()" title="Add yourself to branch directory" class="flex items-center space-x-1.5 px-3.5 py-2 text-xs sm:text-sm font-bold rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white shadow-xs transition transform active:scale-95">
+          <button id="btnSelfRegisterHeader" onclick="openSelfRegisterModal()" title="Add yourself to branch directory" class="flex items-center space-x-1.5 px-3.5 py-2 text-xs sm:text-sm font-bold rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white shadow-xs transition transform active:scale-95 cursor-pointer">
             <i data-lucide="user-plus" class="w-4 h-4"></i>
             <span>In-ziak lut rawh (+ Add Yourself)</span>
           </button>
@@ -182,6 +182,28 @@
 
     <!-- ==================== TAB 1: MEMBER DIRECTORY ==================== -->
     <div id="tabContentDirectory" class="space-y-6">
+
+      <!-- SELF-REGISTRATION HERO BANNER (Big, clear, unmissable) -->
+      <div class="bg-gradient-to-r from-emerald-700 via-teal-700 to-emerald-800 text-white rounded-2xl p-4 sm:p-5 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 no-print">
+        <div class="flex items-center space-x-3.5">
+          <div class="w-12 h-12 rounded-2xl bg-white/20 text-white flex items-center justify-center flex-shrink-0 border border-white/25 shadow-xs">
+            <i data-lucide="user-plus" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <div class="flex items-center space-x-2">
+              <h3 class="text-base sm:text-lg font-bold text-white">Member In-ziahluhna (Self-Registration)</h3>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-emerald-400 text-emerald-950">Active</span>
+            </div>
+            <p class="text-xs text-emerald-100 mt-1 max-w-2xl leading-relaxed">
+              KṬP Armed Veng South Branch member i nih chuan i hming, H/No., Upa Bial leh Passport photo/selfie dah luh nan he laiah hian hmet rawh le.
+            </p>
+          </div>
+        </div>
+        <button type="button" onclick="openSelfRegisterModal()" class="w-full sm:w-auto px-5 py-3 bg-white text-emerald-900 hover:bg-emerald-50 text-xs sm:text-sm font-extrabold rounded-xl shadow-md transition transform active:scale-95 flex items-center justify-center gap-2 flex-shrink-0 cursor-pointer">
+          <i data-lucide="camera" class="w-4 h-4 text-emerald-700"></i>
+          <span>In-ziak lut rawh (+ Add Yourself)</span>
+        </button>
+      </div>
 
       <!-- LATEST NOTICE ALERT BANNER -->
       <div id="latestNoticeAlert" onclick="switchTab('notices')" class="cursor-pointer bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-3.5 flex items-center justify-between shadow-xs hover:border-amber-300 transition no-print group">
@@ -370,9 +392,11 @@
             <thead>
               <tr class="bg-slate-50 text-slate-700 font-bold border-b border-slate-200 text-[11px] uppercase tracking-wider">
                 <th class="py-3.5 px-3 w-10 text-center">#</th>
+                <th class="py-3.5 px-3 w-16 text-center">Photo</th>
                 <th class="py-3.5 px-4">Member Name</th>
-                <th class="py-3.5 px-4 w-36">Group</th>
-                <th class="py-3.5 px-4 w-44">H/No. & Upa Bial</th>
+                <th class="py-3.5 px-3 w-28">Group</th>
+                <th class="py-3.5 px-3 w-24">H/No.</th>
+                <th class="py-3.5 px-3 w-32">Upa Bial</th>
                 <th class="py-3.5 px-4">Contact</th>
                 <th id="thActions" class="py-3.5 px-4 text-center action-col w-24 hidden">Actions</th>
               </tr>
@@ -516,41 +540,53 @@
       <form onsubmit="handleSelfRegisterSubmit(event)" class="p-6 space-y-4 max-h-[82vh] overflow-y-auto">
         
         <!-- Passport Photo / Selfie Section -->
-        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col sm:flex-row items-center gap-4">
-          <div class="relative">
-            <img id="selfRegPhotoPreview" src="" alt="Passport Preview" class="passport-box bg-slate-200 hidden">
-            <div id="selfRegPhotoPlaceholder" class="passport-box bg-slate-200 text-slate-400 flex flex-col items-center justify-center text-center p-2">
-              <i data-lucide="camera" class="w-7 h-7 mb-1 text-slate-400"></i>
-              <span class="text-[10px] font-semibold leading-tight">Passport Photo</span>
-            </div>
-            <button type="button" onclick="clearSelfRegPhoto()" id="selfRegRemovePhotoBtn" class="hidden absolute -top-2 -right-2 w-6 h-6 rounded-full bg-rose-600 text-white flex items-center justify-center shadow-xs">
-              <i data-lucide="x" class="w-3.5 h-3.5"></i>
-            </button>
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+              <i data-lucide="camera" class="w-4 h-4 text-emerald-700"></i>
+              <span>Passport Photo / Selfie (Auto WebP)</span>
+            </label>
+            <span id="selfRegPhotoSizeBadge" class="hidden px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+              WebP Compressed
+            </span>
           </div>
 
-          <div class="flex-1 space-y-2 text-center sm:text-left">
-            <div>
-              <h5 class="text-xs font-bold text-slate-800">Passport Size Photo / Selfie</h5>
-              <p class="text-[11px] text-slate-500">Camera-in selfie la la emaw gallery aṭangin upload rawh. Automatic-in <b>WebP (~15KB)</b> ah a convert ang.</p>
-              <div id="selfRegPhotoSizeBadge" class="hidden mt-1 inline-block px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
-                WebP Compressed
+          <div class="flex flex-col sm:flex-row items-center gap-4">
+            <!-- Photo Box Preview -->
+            <div class="relative flex-shrink-0">
+              <img id="selfRegPhotoPreview" src="" alt="Passport Preview" class="passport-box bg-white shadow-2xs hidden">
+              <div id="selfRegPhotoPlaceholder" class="passport-box bg-slate-100 border-2 border-dashed border-slate-300 text-slate-400 flex flex-col items-center justify-center text-center p-2">
+                <i data-lucide="camera" class="w-8 h-8 mb-1 text-slate-400"></i>
+                <span class="text-[10px] font-bold text-slate-500 leading-tight">Thlalak A Awm Lo</span>
+                <span class="text-[9px] text-slate-400 mt-0.5">(Passport Size)</span>
               </div>
+              <button type="button" onclick="clearSelfRegPhoto()" id="selfRegRemovePhotoBtn" class="hidden absolute -top-2 -right-2 w-6 h-6 rounded-full bg-rose-600 text-white flex items-center justify-center shadow-md hover:bg-rose-700 transition" title="Paih rawh">
+                <i data-lucide="x" class="w-3.5 h-3.5"></i>
+              </button>
             </div>
 
-            <div class="flex items-center gap-2 justify-center sm:justify-start flex-wrap">
-              <!-- Selfie Camera Capture Input -->
-              <label class="cursor-pointer px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-2xs">
-                <i data-lucide="camera" class="w-3.5 h-3.5"></i>
-                <span>Selfie La Rawh</span>
-                <input type="file" accept="image/*" capture="user" onchange="handlePhotoUpload(event, 'selfReg')" class="hidden">
-              </label>
+            <!-- Upload Controls & Description -->
+            <div class="flex-1 space-y-2.5 text-center sm:text-left w-full">
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Phone camera aṭangin <b>Selfie</b> la la emaw i phone/computer aṭangin passport photo upload rawh. Automatic-in <b>WebP format (~15 KB)</b> ah a convert dawn a ni.
+              </p>
 
-              <!-- Gallery Upload Input -->
-              <label class="cursor-pointer px-3 py-1.5 bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 text-xs font-bold rounded-xl transition flex items-center gap-1.5">
-                <i data-lucide="image" class="w-3.5 h-3.5 text-slate-500"></i>
-                <span>Gallery / File</span>
-                <input type="file" accept="image/*" onchange="handlePhotoUpload(event, 'selfReg')" class="hidden">
-              </label>
+              <!-- Hidden native file inputs -->
+              <input type="file" id="selfRegCameraInput" accept="image/*" capture="user" onchange="handlePhotoUpload(event, 'selfReg')" style="display: none;">
+              <input type="file" id="selfRegGalleryInput" accept="image/*" onchange="handlePhotoUpload(event, 'selfReg')" style="display: none;">
+
+              <!-- Two prominent action buttons that trigger click on the inputs -->
+              <div class="flex items-center gap-2 justify-center sm:justify-start flex-wrap">
+                <button type="button" onclick="document.getElementById('selfRegCameraInput').click()" class="px-3.5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-xs active:scale-95 cursor-pointer">
+                  <i data-lucide="camera" class="w-4 h-4"></i>
+                  <span>Selfie Camera</span>
+                </button>
+
+                <button type="button" onclick="document.getElementById('selfRegGalleryInput').click()" class="px-3.5 py-2 bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-2xs active:scale-95 cursor-pointer">
+                  <i data-lucide="upload" class="w-4 h-4 text-slate-500"></i>
+                  <span>Gallery / File Upload</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -679,31 +715,48 @@
         <input type="hidden" id="formMemberId">
 
         <!-- Photo Section -->
-        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col sm:flex-row items-center gap-4">
-          <div class="relative">
-            <img id="formPhotoPreview" src="" alt="Passport Preview" class="passport-box bg-slate-200 hidden">
-            <div id="formPhotoPlaceholder" class="passport-box bg-slate-200 text-slate-400 flex flex-col items-center justify-center text-center p-2">
-              <i data-lucide="camera" class="w-7 h-7 mb-1 text-slate-400"></i>
-              <span class="text-[10px] font-semibold leading-tight">Passport Photo</span>
-            </div>
-            <button type="button" onclick="clearFormPhoto()" id="formRemovePhotoBtn" class="hidden absolute -top-2 -right-2 w-6 h-6 rounded-full bg-rose-600 text-white flex items-center justify-center shadow-xs">
-              <i data-lucide="x" class="w-3.5 h-3.5"></i>
-            </button>
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+              <i data-lucide="camera" class="w-4 h-4 text-rose-800"></i>
+              <span>Passport Photo (Auto WebP)</span>
+            </label>
+            <span id="formPhotoSizeBadge" class="hidden px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+              WebP Compressed
+            </span>
           </div>
 
-          <div class="flex-1 space-y-2 text-center sm:text-left">
-            <h5 class="text-xs font-bold text-slate-800">Passport Photo (Auto WebP)</h5>
-            <div class="flex items-center gap-2 justify-center sm:justify-start flex-wrap">
-              <label class="cursor-pointer px-3 py-1.5 bg-rose-900 hover:bg-rose-800 text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5">
-                <i data-lucide="camera" class="w-3.5 h-3.5"></i>
-                <span>Selfie / Camera</span>
-                <input type="file" accept="image/*" capture="user" onchange="handlePhotoUpload(event, 'form')" class="hidden">
-              </label>
-              <label class="cursor-pointer px-3 py-1.5 bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 text-xs font-bold rounded-xl transition flex items-center gap-1.5">
-                <i data-lucide="image" class="w-3.5 h-3.5 text-slate-500"></i>
-                <span>Upload File</span>
-                <input type="file" accept="image/*" onchange="handlePhotoUpload(event, 'form')" class="hidden">
-              </label>
+          <div class="flex flex-col sm:flex-row items-center gap-4">
+            <div class="relative flex-shrink-0">
+              <img id="formPhotoPreview" src="" alt="Passport Preview" class="passport-box bg-white shadow-2xs hidden">
+              <div id="formPhotoPlaceholder" class="passport-box bg-slate-100 border-2 border-dashed border-slate-300 text-slate-400 flex flex-col items-center justify-center text-center p-2">
+                <i data-lucide="camera" class="w-8 h-8 mb-1 text-slate-400"></i>
+                <span class="text-[10px] font-bold text-slate-500 leading-tight">Thlalak A Awm Lo</span>
+                <span class="text-[9px] text-slate-400 mt-0.5">(Passport Size)</span>
+              </div>
+              <button type="button" onclick="clearFormPhoto()" id="formRemovePhotoBtn" class="hidden absolute -top-2 -right-2 w-6 h-6 rounded-full bg-rose-600 text-white flex items-center justify-center shadow-md hover:bg-rose-700 transition" title="Paih rawh">
+                <i data-lucide="x" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+
+            <div class="flex-1 space-y-2.5 text-center sm:text-left w-full">
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Camera selfie emaw photo file upload rawh. Automatic-in <b>WebP format (~15 KB)</b> ah a convert ang.
+              </p>
+
+              <input type="file" id="formCameraInput" accept="image/*" capture="user" onchange="handlePhotoUpload(event, 'form')" style="display: none;">
+              <input type="file" id="formGalleryInput" accept="image/*" onchange="handlePhotoUpload(event, 'form')" style="display: none;">
+
+              <div class="flex items-center gap-2 justify-center sm:justify-start flex-wrap">
+                <button type="button" onclick="document.getElementById('formCameraInput').click()" class="px-3.5 py-2 bg-rose-900 hover:bg-rose-800 text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-xs active:scale-95 cursor-pointer">
+                  <i data-lucide="camera" class="w-4 h-4"></i>
+                  <span>Selfie Camera</span>
+                </button>
+                <button type="button" onclick="document.getElementById('formGalleryInput').click()" class="px-3.5 py-2 bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-2xs active:scale-95 cursor-pointer">
+                  <i data-lucide="upload" class="w-4 h-4 text-slate-500"></i>
+                  <span>Upload File</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -974,7 +1027,7 @@
   <!-- TOAST NOTIFICATION CONTAINER -->
   <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none no-print"></div>
 
-  <!-- Application Logic -->
-  <script src="app.js"></script>
+  <!-- Application Logic (Cache-busted) -->
+  <script src="app.js?v=20261112e"></script>
 </body>
 </html>
